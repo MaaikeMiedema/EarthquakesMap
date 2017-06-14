@@ -1,0 +1,37 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Earthquakes induced by Gas Exploration in The Netherlands 
+
+#### *Maaike Miedema, June 14, 2017*
+
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(dplyr)
+library (leaflet)
+
+allInduced <- read.csv("all_induced.csv")
+induced<- filter(allInduced, MAG>0)
+
+mapInduced <-induced %>% 
+        leaflet() %>%
+        addTiles() %>% 
+        addCircles(data=induced, lng=~LON, lat=~LAT, weight=1, radius = 7*sqrt(30^induced$MAG), 
+                   col = "darkred", popup = paste("magnitude: ",as.character(induced$MAG)))
+setView(mapInduced,lng = 5.7, lat = 53.1, zoom = 8)
+
+```
+
+  
+####
+***About the map***  
+Gas exploration causes subsidense and earthquakes, leading to damage, especially in the North Eastern part of The Netherlands. This map shows registered earthquakes induced by gas exploration, 1986 - present. The magnitude is given at Richter scale. This is a logarithmic scale and the area of the circles is set relative to the energy released.
+  
+  
+***Source of data***  
+Data downloaded June 14, 2017 from the site of the Royal Dutch Meteorological Institute  
+http://knmi.nl/kennis-en-datacentrum/dataset/aardbevingscatalogus, file: all_induced.csv.
